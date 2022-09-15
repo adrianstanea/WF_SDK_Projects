@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 
 class TransistorTracer:
-    def __init__(self, Rb=1e3, Rc=100, Vc=5, totalSamples=201, Vb=[0.4, 0.8, 1]):
-        """constructor function, setup uses a transistor having connected a resistor from base-supply
-        and from collector-supply, emitter to gnd
+    def __init__(self, Rb=1e3, Rc=100, Vc=5, totalSamples=201, Vb_list=[0.4, 0.8, 1]):
+        """constructor function, setup uses a transistor having connected a resistor from base to supply
+        another from collector to supply, emitter is connected to gnd
 
         Args:
             Vc (int, optional): control voltage. Defaults to 5.
@@ -24,7 +24,7 @@ class TransistorTracer:
         self.totalSamples = totalSamples
         self.Rb = Rb
         self.Rc = Rc
-        self.Vb = Vb
+        self.Vb_list = Vb_list
 
         self.step = round(Vc/totalSamples, 4)
 
@@ -77,10 +77,10 @@ class TransistorTracer:
 
         scope.open(self.device_data)
 
-        for voltage_base in self.Vb:
-            print(f"Base voltage: {voltage_base}")
+        for applied_base_voltage in self.Vb_list:
+            print(f"Base voltage: {applied_base_voltage}")
             wavegen.generate(self.device_data, 1,
-                             wavegen.function.dc, offset=voltage_base)
+                             wavegen.function.dc, offset=applied_base_voltage)
             current_reading = []
             for sample in range(self.totalSamples):
                 test_voltage = round(sample * self.step, 4)
@@ -131,7 +131,7 @@ def plot_curve(sampled_values):
 
 if __name__ == '__main__':
     transistor_tracer = TransistorTracer(
-        Vc=4, totalSamples=301, Vb=[0.8, 1.2, 1.6, 2])
+        Vc=4, totalSamples=301, Vb_list=[0.8, 1.2, 1.6, 2])
 
     try:
         while True:

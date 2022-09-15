@@ -2,6 +2,8 @@ from pickle import TRUE
 import wave
 from WF_SDK import device, supplies, pattern, scope, wavegen       # import instruments
 
+from time import sleep
+
 # from utilities import extract_bits
 
 
@@ -45,8 +47,9 @@ class AD2_driver:
     def scope_read(self, channel, sample_rate, trigger_level, buffer_size):
         scope.open(self.device_data, sampling_frequency=sample_rate,
                    amplitude_range=10, buffer_size=buffer_size)
-        # scope.trigger(self.device_data, enable=True,
-        #               source=scope.trigger_source.analog, channel=channel, level=trigger_level)
+        sleep(0.1)
+        scope.trigger(self.device_data, enable=True,
+                      source=scope.trigger_source.analog, channel=channel, level=trigger_level)
 
         buffer, time = scope.record(self.device_data, channel=channel)
         time = [moment * 1e3 for moment in time]
